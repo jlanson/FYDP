@@ -1,117 +1,112 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, { useState } from 'react';
+import { View, Button, TextInput, StyleSheet, Text } from 'react-native';
+import axios from 'axios';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+const App: React.FC = () => {
+  const [getLocation, setLocation] = useState('');
+  const [getRoute, setRoute] = useState('');
+  const [param1, setParam1] = useState('');
+  const [param2, setParam2] = useState('');
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
-function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  const handleGetRequest = async () => {
+    try {
+      const response = await axios.get('http://10.0.2.2:3000/locations');
+      setLocation(JSON.stringify(response.data));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
+  const handlePostRequest = async () => {
+    try {
+      const response = await axios.get(`http://10.0.2.2:3000/routes?from=${param1}to=${param2}`);
+      setRoute(JSON.stringify(response.data));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
+  const clear = () =>{
+    setRoute('')
+    setLocation('')
+  }
+
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <View style={styles.container}>
+      <View style={styles.buttonContainer}>
+        <Button title="Get Locations" onPress={handleGetRequest} />
+      </View>
+      <View style={styles.buttonContainer}>
+        <Button title="Get Routes" onPress={handlePostRequest} />
+      </View>
+      <View style={styles.inputContainer}>
+      <Text style={{color:'white', fontSize:20}}>From:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Parameter 1"
+          value={param1}
+          onChangeText={setParam1}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={{color:'white', fontSize:20}}>To:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Parameter 2"
+          value={param2}
+          onChangeText={setParam2}
+        />
+      </View>
+      <View style={styles.buttonContainer}>
+        <Button title="Clear" onPress={clear} />
+      </View>
+      <View style={styles.responseContainerTop}>
+        <Text style={styles.responseHeading}>Get Locations:</Text>
+        <Text style={styles.responseText}>{getLocation}</Text>
+      </View>
+      <View style={styles.responseContainerBottom}>
+        <Text style={styles.responseHeading}>Get Route:</Text>
+        <Text style={styles.responseText}>{getRoute}</Text>
+      </View>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
+    backgroundColor: 'black',
+    paddingTop: 40,
+    paddingHorizontal: 20,
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  buttonContainer: {
+    marginBottom: 10,
   },
-  sectionDescription: {
-    marginTop: 8,
+  inputContainer: {
+    marginBottom: 10,
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    color: 'white',
+    paddingHorizontal: 10,
+  },
+  responseContainerTop: {
+    marginTop: 20,
+  },
+  responseContainerBottom: {
+    marginTop: 100,
+  },
+  responseHeading: {
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: 'bold',
+    color: 'gold',
+    marginBottom: 10,
   },
-  highlight: {
-    fontWeight: '700',
+  responseText: {
+    color: 'gold',
   },
 });
 

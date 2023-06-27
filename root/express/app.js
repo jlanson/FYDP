@@ -7,9 +7,10 @@ const port = 3000;
 
 const neo4j = require("neo4j-driver");
 
+
 // Init Neo4j connection
 const uri = process.env.URI;
-const user = process.env.USERNAME;
+const user = 'neo4j';
 const password = process.env.PASSWORD;
 
 // To learn more about the driver: https://neo4j.com/docs/javascript-manual/current/client-applications/#js-driver-driver-object
@@ -22,6 +23,7 @@ app.get("/", async (req, res) => {
 // Retrieve all location data
 app.get("/locations", async (req, res) => {
   const response = await getLocationData(driver);
+  console.log(response)
   res.send(response);
 });
 
