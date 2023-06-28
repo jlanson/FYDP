@@ -19,12 +19,12 @@ const App: React.FC = () => {
 
   const handlePostRequest = async () => {
     try {
-      const response = await axios.get(`http://10.0.2.2:3000/routes?from=${param1}to=${param2}`);
+      const response = await axios.get(`http://10.0.2.2:3000/route/${param1}-${param2}`);
       setRoute(JSON.stringify(response.data));
     } catch (error) {
       console.error(error);
     }
-  };
+  };  
 
 
   const clear = () =>{

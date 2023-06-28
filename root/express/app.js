@@ -1,12 +1,11 @@
 require("dotenv").config();
 
-const { getLocationData } = require("./queries");
+const { getLocationData, getRoute } = require("./queries");
 const express = require("express");
 const app = express();
 const port = 3000;
 
 const neo4j = require("neo4j-driver");
-
 
 // Init Neo4j connection
 const uri = process.env.URI;
@@ -28,8 +27,10 @@ app.get("/locations", async (req, res) => {
 });
 
 // Retrieve the path from one location to another
-app.get("/route/:from-:to", (req, res) => {
-  res.send("Not yet implemented");
+app.get("/route/:from-:to", async (req, res) => {
+  const response = await getRoute(driver, req.params.from, req.params.to)
+  console.log(response)
+  res.send(response);
 });
 
 app.listen(port, () => {
